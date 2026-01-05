@@ -1,4 +1,5 @@
 export const daisyuiThemes = [
+    'annual-meeting',
     'valentine',
     'halloween',
     'cmyk',

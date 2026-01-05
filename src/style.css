@@ -7,6 +7,26 @@
     themes: all;
 }
 
+[data-theme="annual-meeting"] {
+    --color-primary: #ffffff;
+    --color-primary-content: #e60012;
+    --color-secondary: #000000;
+    --color-secondary-content: #ffffff;
+    --color-accent: #f3f4f6;
+    --color-accent-content: #1f2937;
+    --color-neutral: #374151;
+    --color-neutral-content: #ffffff;
+    --color-base-100: #7d151d;
+    --color-base-200: #cf0010;
+    --color-base-300: #e60012;
+    --color-base-content: #ffffff;
+
+    --radius-selector: 0.5rem;
+    --radius-field: 0.25rem;
+    --radius-box: 1rem;
+    --size-selector: 0.25rem;
+}
+
 @utility w-option-xs {
     max-width: calc(var(--container-xs) - 90px);
 }
