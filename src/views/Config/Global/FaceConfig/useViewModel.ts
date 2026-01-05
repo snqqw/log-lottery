@@ -1,6 +1,7 @@
 import { storeToRefs } from 'pinia'
 import { onMounted, ref, watch } from 'vue'
 import { z as zod } from 'zod'
+import { themeDefaultColors } from '@/constant/theme'
 import i18n, { languageList } from '@/locales/i18n'
 import useStore from '@/store'
 import { themeChange } from '@/utils'
@@ -152,6 +153,13 @@ export function useViewModel() {
   watch(themeValue, (val: any) => {
     globalConfig.setTheme({ name: val })
     themeChange(val)
+    if (themeDefaultColors[val]) {
+      const colors = themeDefaultColors[val]
+      cardColorValue.value = colors.cardColor
+      luckyCardColorValue.value = colors.luckyCardColor
+      textColorValue.value = colors.textColor
+      patternColorValue.value = colors.patternColor
+    }
   }, { deep: true })
 
   watch(cardColorValue, (val: string) => {
