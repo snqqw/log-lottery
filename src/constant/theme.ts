@@ -20,7 +20,6 @@ export const daisyuiThemes = [
     'wireframe',
     'caramellatte',
     'acid',
-    'cyberpunk',
     'nord',
     'bumblebee',
 

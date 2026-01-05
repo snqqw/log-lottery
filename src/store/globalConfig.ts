@@ -1,6 +1,8 @@
 import type { IImage, IMusic } from '@/types/storeType'
 import { defineStore } from 'pinia'
 import i18n, { browserLanguage } from '@/locales/i18n'
+import { daisyuiThemes, themeDefaultColors } from '@/constant/theme'
+import { themeChange } from '@/utils'
 import { defaultImageList, defaultMusicList, defaultPatternList } from './data'
 // import { IPrizeConfig } from '@/types/storeType';
 export const useGlobalConfig = defineStore('global', {
@@ -153,6 +155,23 @@ export const useGlobalConfig = defineStore('global', {
         setTheme(theme: any) {
             const { name } = theme
             this.globalConfig.theme.name = name
+            // 同步颜色
+            if (themeDefaultColors[name]) {
+                const colors = themeDefaultColors[name]
+                this.globalConfig.theme.cardColor = colors.cardColor
+                this.globalConfig.theme.luckyCardColor = colors.luckyCardColor
+                this.globalConfig.theme.textColor = colors.textColor
+                this.globalConfig.theme.patternColor = colors.patternColor
+            }
+            themeChange(name)
+        },
+        // 切换下一个主题
+        switchNextTheme() {
+            const currentName = this.globalConfig.theme.name
+            const index = daisyuiThemes.indexOf(currentName)
+            const nextIndex = (index + 1) % daisyuiThemes.length
+            const nextTheme = daisyuiThemes[nextIndex]
+            this.setTheme({ name: nextTheme })
         },
         // 设置卡片颜色
         setCardColor(cardColor: string) {

@@ -1,9 +1,10 @@
 <script setup lang='ts'>
 import { useFullscreen } from '@vueuse/core'
-import { Maximize, Minimize } from 'lucide-vue-next'
+import { Maximize, Minimize, Palette } from 'lucide-vue-next'
 import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
+import useStore from '@/store'
 import { usePlayMusic } from './usePlayMusic'
 
 const { playMusic, currentMusic, nextPlay } = usePlayMusic()
@@ -11,6 +12,7 @@ const { isFullscreen, toggle: toggleScreen } = useFullscreen()
 const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
+const globalConfig = useStore().globalConfig
 
 const settingRef = ref()
 const fullScreenRef = ref()
@@ -69,6 +71,14 @@ onMounted(() => {
         @click="playMusic(currentMusic.item)" @click.right.prevent="nextPlay"
       >
         <svg-icon :name="currentMusic.paused ? 'play' : 'pause'" />
+      </div>
+    </div>
+    <div class="tooltip tooltip-left" :data-tip="t('tooltip.nextTheme')">
+      <div
+        class="flex items-center justify-center w-10 h-10 p-0 m-0 cursor-pointer setting-container bg-slate-500/50 rounded-l-xl hover:bg-slate-500/80 hover:text-blue-400/90"
+        @click="globalConfig.switchNextTheme()"
+      >
+        <Palette :size="20" />
       </div>
     </div>
   </div>

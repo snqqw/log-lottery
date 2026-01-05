@@ -1,6 +1,7 @@
 export const tooltipEn = {
   settingConfiguration: 'Setting/Configuration',
   nextSong: 'Right Click to Next Song',
+  nextTheme: 'Click to Switch Theme',
   noSongPlay: 'No Song to Play',
   prizeList: 'Prize List',
   addActivity: 'Add Activity',
@@ -21,6 +22,7 @@ export const tooltipEn = {
 export const tooltipZhCn = {
   settingConfiguration: '设置/配置',
   nextSong: '右键点击下一首',
+  nextTheme: '点击切换主题',
   noSongPlay: '没有音乐可以播放',
   prizeList: '奖项列表',
   addActivity: '添加抽奖',

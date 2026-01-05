@@ -6,7 +6,7 @@ import { storeToRefs } from 'pinia'
 import { PerspectiveCamera, Scene } from 'three'
 import { CSS3DObject, CSS3DRenderer } from 'three-css3d'
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js'
-import { nextTick, onMounted, onUnmounted, ref } from 'vue'
+import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useToast } from 'vue-toast-notification'
 import enterAudio from '@/assets/audio/enter.wav'
 import { useElementPosition, useElementStyle } from '@/hooks/useElement'
@@ -59,6 +59,36 @@ export function useViewModel() {
         table: [],
         sphere: [],
     }
+    // 页面渲染相关
+    function updateAllCardStyles() {
+        if (!objects.value.length || !isInitialDone.value)
+            return
+
+        const mod = currentStatus.value === LotteryStatus.init ? 'default' : 'sphere'
+
+        objects.value.forEach((object, i) => {
+            useElementStyle(
+                object.element,
+                {} as any,
+                i,
+                patternList.value,
+                patternColor.value,
+                cardColor.value,
+                { width: cardSize.value.width, height: cardSize.value.height },
+                textSize.value,
+                mod,
+                'change',
+            )
+        })
+
+        if (containerRef.value) {
+            containerRef.value.style.color = textColor.value
+        }
+    }
+    // 监听样式变化
+    watch([cardColor, patternColor, textColor, luckyColor, textSize, patternList], () => {
+        updateAllCardStyles()
+    }, { deep: true })
     // 页面数据初始值
     const currentStatus = ref<LotteryStatus>(LotteryStatus.init) // 0为初始状态， 1为抽奖准备状态，2为抽奖中状态，3为抽奖结束状态
     const tableData = ref<any[]>([])
@@ -523,7 +553,7 @@ export function useViewModel() {
      * @param {string} mod 模式
      */
     function randomBallData(mod: 'default' | 'lucky' | 'sphere' = 'default') {
-    // 两秒执行一次
+        // 两秒执行一次
         intervalTimer.value = setInterval(() => {
             // 产生随机数数组
             const indexLength = 4
@@ -581,7 +611,7 @@ export function useViewModel() {
      * @description: 清理资源，避免内存溢出
      */
     function cleanup() {
-    // 停止所有Tween动画
+        // 停止所有Tween动画
         TWEEN.removeAll()
 
         // 清理动画循环
@@ -651,7 +681,7 @@ export function useViewModel() {
                 tableData.value = initTableData({ allPersonList: allPersonList.value, rowCount: rowCount.value })
                 initThreeJs()
                 animation()
-                containerRef.value!.style.color = `${textColor}`
+                containerRef.value!.style.color = textColor.value
                 randomBallData()
                 window.addEventListener('keydown', listenKeyboard)
                 isInitialDone.value = true
