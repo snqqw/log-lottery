@@ -1,10 +1,10 @@
 export const footerEn = {
-    'self-reflection': 'Turn inward and examine yourself when you encounter difficulties in life.',
-    'thiefEasy': 'Thief difficult mountain thief easily, breaking heart.',
+    'self-reflection': '@云眠AI版权所有',
+    'thiefEasy': '',
 }
 
 export const footerZhCn = {
-    'self-reflection': '行有不得，反求诸己',
+    'self-reflection': '@云眠AI版权所有',
     'thiefEasy': '破山中贼易，破心中贼难',
 }
 
