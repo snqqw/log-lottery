@@ -8,7 +8,7 @@ import { configRoutes } from '../../router'
 const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
-const menuList = ref<any[]>(configRoutes.children)
+const menuList = ref<any[]>(JSON.parse(JSON.stringify(configRoutes.children)))
 const currentYear = dayjs().year()
 
 function cleanMenuList(menu: any) {
