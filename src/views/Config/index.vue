@@ -26,12 +26,14 @@ const menuList = computed(() => {
     return menu
       .filter(item => item && item.meta && item.meta.title)
       .map(item => ({
-        ...item,
+        name: item.name,
+        path: item.path,
+        meta: item.meta,
         children: item.children ? processMenu(item.children) : undefined,
       }))
   }
 
-  return processMenu(JSON.parse(JSON.stringify(children)))
+  return processMenu(children)
 })
 
 function skip(name: string | any) {
