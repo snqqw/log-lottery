@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import { ref } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { configRoutes } from '@/router/modules/config'
@@ -8,27 +8,30 @@ import { configRoutes } from '@/router/modules/config'
 const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
-const menuList = ref<any[]>(JSON.parse(JSON.stringify(configRoutes.children)))
+
 const currentYear = dayjs().year()
 
-function cleanMenuList(menu: any) {
-  const newList = menu
-  for (let i = 0; i < newList.length; i++) {
-    if (newList[i].children) {
-      cleanMenuList(newList[i].children)
-    }
-    if (!newList[i].meta) {
-      newList.splice(i, 1)
-      i--
-    }
+// 使用 computed 替代 ref + 修改逻辑，更安全且响应式
+const menuList = computed(() => {
+  const children = configRoutes?.children
+  if (!children)
+    return []
+
+  const processMenu = (menu: any[]): any[] => {
+    return menu
+      .filter(item => item && item.meta && item.meta.title)
+      .map(item => ({
+        ...item,
+        children: item.children ? processMenu(item.children) : undefined,
+      }))
   }
 
-  return newList
-}
+  return processMenu(JSON.parse(JSON.stringify(children)))
+})
 
-menuList.value = cleanMenuList(menuList.value)
-
-function skip(name: string) {
+function skip(name: string | any) {
+  if (!name)
+    return
   router.push({ name })
 }
 </script>
@@ -36,20 +39,20 @@ function skip(name: string) {
 <template>
   <div class="flex min-h-[calc(100%-280px)]">
     <ul class="w-56 m-0 mr-3 min-w-56 menu bg-base-200 pt-14">
-      <li v-for="item in menuList" :key="item.name">
-        <details v-if="item.children" open>
-          <summary>{{ t(item.meta!.title) }}</summary>
+      <li v-for="item in menuList" :key="item.name || item.path">
+        <details v-if="item.children && item.children.length > 0" open>
+          <summary>{{ t(item.meta.title) }}</summary>
           <ul>
-            <li v-for="subItem in item.children" :key="subItem.name">
-              <details v-if="subItem.children" open>
-                <summary>{{ t(subItem.meta!.title) }}</summary>
+            <li v-for="subItem in item.children" :key="subItem.name || subItem.path">
+              <details v-if="subItem.children && subItem.children.length > 0" open>
+                <summary>{{ t(subItem.meta.title) }}</summary>
                 <ul>
-                  <li v-for="subSubItem in subItem.children" :key="subSubItem.name">
+                  <li v-for="subSubItem in subItem.children" :key="subSubItem.name || subSubItem.path">
                     <a
                       :style="subSubItem.name === route.name ? 'background-color:rgba(12,12,12,0.2)' : ''"
                       @click="skip(subSubItem.name)"
                     >{{
-                      t(subSubItem.meta!.title) }}</a>
+                      t(subSubItem.meta.title) }}</a>
                   </li>
                 </ul>
               </details>
@@ -57,14 +60,14 @@ function skip(name: string) {
                 v-else :style="subItem.name === route.name ? 'background-color:rgba(12,12,12,0.2)' : ''"
                 @click="skip(subItem.name)"
               >{{
-                t(subItem.meta!.title) }}</a>
+                t(subItem.meta.title) }}</a>
             </li>
           </ul>
         </details>
         <a
           v-else :style="item.name === route.name ? 'background-color:rgba(12,12,12,0.2)' : ''"
           @click="skip(item.name)"
-        >{{ t(item.meta!.title) }}</a>
+        >{{ t(item.meta.title) }}</a>
       </li>
     </ul>
     <router-view class="flex-1 mt-5" />

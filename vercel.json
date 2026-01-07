@@ -1,7 +1,7 @@
 {
     "rewrites": [
         {
-            "source": "/log-lottery/(.*)",
+            "source": "/(.*)",
             "destination": "/index.html"
         }
     ]
