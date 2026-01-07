@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-parsing-error -->
 <script setup lang='ts'>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import DaiysuiTable from '@/components/DaiysuiTable/index.vue'
 import CustomDialog from '@/components/Dialog/index.vue'
@@ -27,6 +27,11 @@ const {
 } = useViewModel({ exportInputFileRef })
 const { t } = useI18n()
 const limitType = '.xlsx,.xls'
+
+onMounted(() => {
+  console.log('onMounted')
+})
+
 </script>
 
 <template>

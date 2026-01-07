@@ -7,18 +7,21 @@ export const configRoutes: RouteRecordRaw = {
     children: [
         {
             path: '',
-            redirect: { name: 'PersonConfig' },
+            redirect: '/log-lottery/config/person',
         },
         {
             path: 'person',
             name: 'PersonConfig',
-            redirect: { name: 'AllPersonConfig' },
             component: () => import('@/views/Config/Person/index.vue'),
             meta: {
                 title: 'sidebar.personConfiguration',
                 icon: 'person',
             },
             children: [
+                {
+                    path: '',
+                    redirect: '/log-lottery/config/person/all',
+                },
                 {
                     path: 'all',
                     name: 'AllPersonConfig',
@@ -51,7 +54,7 @@ export const configRoutes: RouteRecordRaw = {
         {
             path: 'global',
             name: 'GlobalConfig',
-            redirect: { name: 'FaceConfig' },
+            redirect: '/log-lottery/config/global/face',
             meta: {
                 title: 'sidebar.globalSetting',
                 icon: 'global',
@@ -59,7 +62,7 @@ export const configRoutes: RouteRecordRaw = {
             children: [
                 {
                     path: 'all',
-                    redirect: { name: 'FaceConfig' },
+                    redirect: '/log-lottery/config/global/face',
                 },
                 {
                     path: 'face',

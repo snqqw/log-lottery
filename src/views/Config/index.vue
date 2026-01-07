@@ -1,19 +1,24 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
-import { configRoutes } from '@/router/modules/config'
 
 const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
 
+onMounted(() => {
+  console.log('Config view mounted')
+})
+
 const currentYear = dayjs().year()
 
-// 使用 computed 替代 ref + 修改逻辑，更安全且响应式
+// 从路由实例中动态获取子路由，避免循环引用
 const menuList = computed(() => {
-  const children = configRoutes?.children
+  // 查找名为 'Config' 的路由记录
+  const configRoute = router.getRoutes().find(r => r.name === 'Config')
+  const children = configRoute?.children
   if (!children)
     return []
 
