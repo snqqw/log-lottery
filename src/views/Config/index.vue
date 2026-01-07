@@ -3,6 +3,7 @@ import dayjs from 'dayjs'
 import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
+import { configRoutes } from '@/router/modules/config'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -14,11 +15,22 @@ onMounted(() => {
 
 const currentYear = dayjs().year()
 
-// 从路由实例中动态获取子路由，避免循环引用
+// 安全翻译函数，防止 i18n 编译报错导致白屏
+function safeT(key: string | any) {
+  if (!key)
+    return ''
+  try {
+    return t(key)
+  }
+  catch (e) {
+    console.warn(`i18n translation failed for key: ${key}`, e)
+    return key
+  }
+}
+
+// 直接从模块导入配置，避免通过 router.getRoutes() 获取（更准确且避开扁平化后的麻烦）
 const menuList = computed(() => {
-  // 查找名为 'Config' 的路由记录
-  const configRoute = router.getRoutes().find(r => r.name === 'Config')
-  const children = configRoute?.children
+  const children = configRoutes?.children
   if (!children)
     return []
 
@@ -48,18 +60,18 @@ function skip(name: string | any) {
     <ul class="w-56 m-0 mr-3 min-w-56 menu bg-base-200 pt-14">
       <li v-for="item in menuList" :key="item.name || item.path">
         <details v-if="item.children && item.children.length > 0" open>
-          <summary>{{ t(item.meta.title) }}</summary>
+          <summary>{{ safeT(item.meta.title) }}</summary>
           <ul>
             <li v-for="subItem in item.children" :key="subItem.name || subItem.path">
               <details v-if="subItem.children && subItem.children.length > 0" open>
-                <summary>{{ t(subItem.meta.title) }}</summary>
+                <summary>{{ safeT(subItem.meta.title) }}</summary>
                 <ul>
                   <li v-for="subSubItem in subItem.children" :key="subSubItem.name || subSubItem.path">
                     <a
                       :style="subSubItem.name === route.name ? 'background-color:rgba(12,12,12,0.2)' : ''"
                       @click="skip(subSubItem.name)"
                     >{{
-                      t(subSubItem.meta.title) }}</a>
+                      safeT(subSubItem.meta.title) }}</a>
                   </li>
                 </ul>
               </details>
@@ -67,21 +79,21 @@ function skip(name: string | any) {
                 v-else :style="subItem.name === route.name ? 'background-color:rgba(12,12,12,0.2)' : ''"
                 @click="skip(subItem.name)"
               >{{
-                t(subItem.meta.title) }}</a>
+                safeT(subItem.meta.title) }}</a>
             </li>
           </ul>
         </details>
         <a
           v-else :style="item.name === route.name ? 'background-color:rgba(12,12,12,0.2)' : ''"
           @click="skip(item.name)"
-        >{{ t(item.meta.title) }}</a>
+        >{{ safeT(item.meta.title) }}</a>
       </li>
     </ul>
     <router-view class="flex-1 mt-5" />
   </div>
   <footer class="p-10 rounded footer footer-center bg-base-200 h-70 flex flex-col gap-4 text-base-content">
     <nav class="grid grid-flow-col gap-4">
-      {{ t('footer.self-reflection') }}
+      {{ safeT('footer.self-reflection') }}
     </nav>
   </footer>
 </template>

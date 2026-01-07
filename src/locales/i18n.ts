@@ -18,7 +18,17 @@ export const languageList = [
   },
 ]
 export const browserLanguage = navigator.language.toLowerCase().includes('zh') ? 'zhCn' : 'en'
-const globalConfig = JSON.parse(localStorage.getItem('globalConfig') || '{}').globalConfig || {}
+let globalConfig: any = {}
+try {
+  const configStr = localStorage.getItem('globalConfig')
+  if (configStr) {
+    const storageData = JSON.parse(configStr)
+    globalConfig = storageData.globalConfig || storageData || {}
+  }
+}
+catch (e) {
+  console.warn('Failed to parse globalConfig from localStorage', e)
+}
 // 创建i18n
 const i18n = createI18n({
   locale: globalConfig.language || browserLanguage,
